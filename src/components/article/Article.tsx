@@ -6,17 +6,9 @@ import { Text } from 'src/ui/text';
 
 import styles from './Article.module.scss';
 
-export const Article = ({
-	setOpen,
-}: {
-	setOpen: (open: boolean) => unknown;
-}) => {
+export const Article = () => {
 	return (
-		<article
-			className={clsx(styles.article)}
-			onClick={() => {
-				setOpen(false);
-			}}>
+		<article className={clsx(styles.article)}>
 			<Text as='h1' size={45} weight={800} uppercase dynamicLite>
 				Портрет Западной Швейцарии
 			</Text>
