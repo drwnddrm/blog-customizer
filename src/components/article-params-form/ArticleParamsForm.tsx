@@ -7,7 +7,7 @@ import { Separator } from '../../ui/separator';
 
 import styles from './ArticleParamsForm.module.scss';
 import clsx from 'clsx';
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useEffect, useRef, useState } from 'react';
 import {
 	backgroundColors,
 	contentWidthArr,
@@ -26,25 +26,22 @@ type TProps = {
 export const ArticleParamsForm = ({ setSettings }: TProps) => {
 	const [select, setSelect] = useState(defaultArticleState);
 	const [open, setOpen] = useState(false);
+	const asideRef = useRef<HTMLElement>(null);
 
 	useEffect(() => {
 		const close = (event: Event) => {
-			const target = event.target as HTMLElement;
-			if (
-				target.parentElement?.className.startsWith('Article-module') ||
-				target.nodeName === 'ARTICLE' ||
-				target.nodeName === 'MAIN'
-			) {
-				setOpen(false);
+			if (asideRef.current?.contains(event.target as HTMLElement)) {
+				return;
 			}
+			setOpen(false);
 		};
 
 		if (open) {
-			document.addEventListener('click', close);
+			window.addEventListener('mousedown', close);
 		}
 
 		return () => {
-			document.removeEventListener('click', close);
+			window.removeEventListener('mousedown', close);
 		};
 	});
 
@@ -71,14 +68,12 @@ export const ArticleParamsForm = ({ setSettings }: TProps) => {
 
 	return (
 		<>
-			<ArrowButton
-				isOpen={open}
-				onClick={() => (open ? setOpen(false) : setOpen(true))}
-			/>
+			<ArrowButton isOpen={open} onClick={() => setOpen(true)} />
 			<aside
 				className={clsx(styles.container, {
 					[styles['container_open']]: open,
-				})}>
+				})}
+				ref={asideRef}>
 				<form className={styles.form} onSubmit={submitChanges}>
 					<Text as={'h2'} uppercase={true} weight={800} size={31}>
 						Задайте параметры
